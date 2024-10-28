@@ -61,11 +61,15 @@ public class PlayerController : MonoBehaviour
     void CameraLook()
     {
         // 카메라를 돌려줄 값을 mouseDealt.y에서 받고 민감도를 곱해준다.
+        // 마우스를 좌우로 움직이면 mouseDelta.x 값이 변경된다.
+        // 캐릭터가 좌우를 움직이려면 y축을 움직여야되기 때문에 좌우는 y값 상하는 x값을 받아온다.
         camCurxRot += mouseDelta.y * lookSensitivity;
         // camCurRot의 최소값 최대값을 넘어가지 않게 Mathf.Clamp()를 활용한다.
         // camCurRot가 minXLook을 넘어가면 minXLook값을 반환하고 maxXLook을 넘어가면 maxXLook값을 반환한다.
         camCurxRot = Mathf.Clamp(camCurxRot, minXLook, maxXLook);
         // 월드 좌표에 있는게 아니라 로컬 좌표로 불러온다.
+        // -cmaCurxRot를 한 이유는 mouseDelta값을 아래로 드래그하면 -가 되기 때문이다.
+        // 실제와 보여지는 값이 반대
         cameraContainer.localEulerAngles = new Vector3(-camCurxRot, 0, 0);
 
         // 카메라의 상하를 움직이기 위해 mouseDelta.x를 캐릭터 y값에 넣어준다.
