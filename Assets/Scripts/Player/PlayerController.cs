@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
     [Header("Moverment")]
     public float moveSpeed;
     private Vector2 curMovementInput;
+    public LayerMask groundLayerMask;
 
     [Header("Look")]
     public Transform cameraContainer;
@@ -43,6 +44,9 @@ public class PlayerController : MonoBehaviour
 
     private void LateUpdate()
     {
+        // Update, FixedUpdate에서 먼저 호출 후 LateUpdate가 호출된다.
+        // 카메라 회전을 LateUpdate에서 호출하는 이유는 카메라가 캐릭터의 최종 위치와 방향을 기준으로 설정되기 때문
+
         CameraLook();
     }
 
@@ -91,5 +95,30 @@ public class PlayerController : MonoBehaviour
     public void OnLook(InputAction.CallbackContext context)
     {
         mouseDelta = context.ReadValue<Vector2>();
+    }
+
+    bool IsGrounded()
+    {
+        // Ray 배열 생성
+        Ray[] rays = new Ray[4]
+        {
+            // 플레이어의 4방향 (앞, 뒤, 오른쪽, 왼쪽)에서 아래 방향으로 쏠 레이를 생성
+            new Ray(transform.position + (transform.forward * 0.2f) + (transform.up * 0.01f), Vector3.down),
+            new Ray(transform.position + (-transform.forward * 0.2f) + (transform.up * 0.01f), Vector3.down),
+            new Ray(transform.position + (transform.right * 0.2f) + (transform.up * 0.01f), Vector3.down),
+            new Ray(transform.position + (-transform.right * 0.2f) + (transform.up * 0.01f), Vector3.down)
+        };
+
+        // 레이의 개수만큼 Physics.Raycast 발사
+        for (int i = 0; i < rays.Length; i++)
+        {
+            if (Physics.Raycast(rays[i], 0.1f, groundLayerMask))
+            {
+                // 만약 groundLayerMask에 닿으면 true
+                return true;
+            }
+        }
+        // 닿지 않는다면 false
+        return false;
     }
 }
