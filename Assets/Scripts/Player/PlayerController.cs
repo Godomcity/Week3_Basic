@@ -1,4 +1,5 @@
-﻿using Unity.VisualScripting;
+﻿using System;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -25,6 +26,9 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody rigidbody;
 
+    public bool canLook = true;
+    public Action inventory;
+
     private void Awake()
     {
         rigidbody = GetComponent<Rigidbody>();
@@ -46,8 +50,10 @@ public class PlayerController : MonoBehaviour
     {
         // Update, FixedUpdate에서 먼저 호출 후 LateUpdate가 호출된다.
         // 카메라 회전을 LateUpdate에서 호출하는 이유는 카메라가 캐릭터의 최종 위치와 방향을 기준으로 설정되기 때문
-
-        CameraLook();
+        if(cnaLook)
+        {
+            CameraLook();
+        }
     }
 
     private void Move()
@@ -120,5 +126,26 @@ public class PlayerController : MonoBehaviour
         }
         // 닿지 않는다면 false
         return false;
+    }
+
+    public void OnInventoryButton(InputAction.CallbackContext context)
+    {
+        if(context.phase == InputActionPhase.Started)
+        {
+            // 인벤토리 버튼을 눌렀을 때 이벤트 호출
+            inventory?.Invoke();
+            // 함수 실행 시 마우스 커서가 나오고 플레이어CameraLook은 실행되지 않음.
+            ToggleCursor();
+        }
+    }
+
+    void ToggleCursor()
+    {
+        // 마우스 커스 락스테트에 따른 불 값
+        bool toggle = Cursor.lockState == CursorLockMode.Locked;
+        // toggle가 true이면 마우스 커서가 나오고 false일 때 마우스 커서가 안나옴
+        Cursor.lockState = toggle ? CursorLockMode.None : CursorLockMode.Locked;
+        // canLook은 toggle의 반대
+        canLook = !toggle;
     }
 }

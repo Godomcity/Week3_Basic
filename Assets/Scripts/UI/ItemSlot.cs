@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem.Processors;
 using UnityEngine.UI;
 
 public class ItemSlot : MonoBehaviour
@@ -26,6 +27,7 @@ public class ItemSlot : MonoBehaviour
 
     private void OnEnable()
     {
+        // 아웃라인
         outline.enabled = equipped;
     }
 
@@ -36,5 +38,23 @@ public class ItemSlot : MonoBehaviour
         icon.sprite = item.icon;
         // 아이템 갯수가 1보다 크면 quantity 만큼 텍스트로 보여주고 아니면 빈 텍스트로한다.
         quatityText.text = quantity > 1 ? quantity.ToString() : string.Empty;
+
+        if(outline != null)
+        {
+            outline.enabled = equipped;
+        }
+    }
+
+    public void Clear()
+    {
+        // 아이템 슬롯 정보 초기화
+        item = null;
+        icon.gameObject.SetActive(false);
+        quatityText.text = string.Empty;
+    }
+
+    public void OnClickButton()
+    {
+        inventory.SelectItem(index);
     }
 }
