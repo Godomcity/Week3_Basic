@@ -50,7 +50,7 @@ public class PlayerController : MonoBehaviour
     {
         // Update, FixedUpdate에서 먼저 호출 후 LateUpdate가 호출된다.
         // 카메라 회전을 LateUpdate에서 호출하는 이유는 카메라가 캐릭터의 최종 위치와 방향을 기준으로 설정되기 때문
-        if(cnaLook)
+        if(canLook)
         {
             CameraLook();
         }
